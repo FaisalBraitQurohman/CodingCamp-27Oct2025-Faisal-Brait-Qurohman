@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Neobrutalism To-Do List</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>📝 To-Do List</h1>
+
+        <div class="input-section">
+            <form id="todoForm">
+                <div class="form-group">
+                    <label for="todoInput">Task:</label>
+                    <input type="text" id="todoInput" placeholder="Enter your task...">
+                    <div class="error-message" id="taskError">⚠️ Please enter a task!</div>
+                </div>
+
+                <div class="form-group">
+                    <label for="dateInput">Due Date:</label>
+                    <input type="date" id="dateInput">
+                    <div class="error-message" id="dateError">⚠️ Please select a date!</div>
+                </div>
+
+                <div class="button-group">
+                    <button type="submit" id="addBtn">+ Add Task</button>
+                </div>
+            </form>
+        </div>
+
+        <div class="filter-section">
+            <label>Filter:</label>
+            <div class="filter-buttons">
+                <button class="filter-btn active" data-filter="all">All</button>
+                <button class="filter-btn" data-filter="active">Active</button>
+                <button class="filter-btn" data-filter="completed">Completed</button>
+            </div>
+        </div>
+
+        <div class="todo-list" id="todoList">
+            <div class="empty-state">
+                <h2>No Tasks Yet!</h2>
+                <p>Add your first task to get started 🚀</p>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/script.js"></script>
+</body>
+</html>
