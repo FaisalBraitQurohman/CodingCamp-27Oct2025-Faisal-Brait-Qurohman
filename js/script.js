@@ -1,8 +1,16 @@
 let todos = [];
 let currentFilter = 'all';
 
+// Load todos from memory
 function loadTodos() {
+    console.log('Loading todos:', todos);
     const todoList = document.getElementById('todoList');
+    
+    if (!todoList) {
+        console.error('Element #todoList not found!');
+        return;
+    }
+    
     todoList.innerHTML = '';
 
     const filteredTodos = todos.filter(todo => {
@@ -40,49 +48,103 @@ function loadTodos() {
     });
 }
 
-document.getElementById('todoForm').addEventListener('submit', function(e) {
-    e.preventDefault();
+// Initialize when DOM is ready
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('DOM loaded, initializing...');
     
-    const taskInput = document.getElementById('todoInput');
+    // Set minimum date to today
     const dateInput = document.getElementById('dateInput');
-    const taskError = document.getElementById('taskError');
-    const dateError = document.getElementById('dateError');
-
-    let isValid = true;
-
-
-    taskError.style.display = 'none';
-    dateError.style.display = 'none';
-
-k
-    if (!taskInput.value.trim()) {
-        taskError.style.display = 'block';
-        isValid = false;
+    if (dateInput) {
+        dateInput.min = new Date().toISOString().split('T')[0];
     }
-
- 
-    if (!dateInput.value) {
-        dateError.style.display = 'block';
-        isValid = false;
+    
+    // Add todo form handler
+    const todoForm = document.getElementById('todoForm');
+    if (!todoForm) {
+        console.error('Form #todoForm not found!');
+        return;
     }
+    
+    todoForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        console.log('Form submitted!');
+        
+        const taskInput = document.getElementById('todoInput');
+        const dateInput = document.getElementById('dateInput');
+        const taskError = document.getElementById('taskError');
+        const dateError = document.getElementById('dateError');
 
-    if (!isValid) return;
+        if (!taskInput || !dateInput) {
+            console.error('Input elements not found!');
+            return;
+        }
 
-    const newTodo = {
-        id: Date.now(),
-        task: taskInput.value.trim(),
-        date: dateInput.value,
-        completed: false
-    };
+        let isValid = true;
 
-    todos.push(newTodo);
+        // Reset errors
+        if (taskError) taskError.style.display = 'none';
+        if (dateError) dateError.style.display = 'none';
+
+        // Validate task
+        if (!taskInput.value.trim()) {
+            if (taskError) taskError.style.display = 'block';
+            isValid = false;
+            console.log('Task is empty');
+        }
+
+        // Validate date
+        if (!dateInput.value) {
+            if (dateError) dateError.style.display = 'block';
+            isValid = false;
+            console.log('Date is empty');
+        }
+
+        if (!isValid) {
+            console.log('Validation failed');
+            return;
+        }
+
+        // Add todo
+        const newTodo = {
+            id: Date.now(),
+            task: taskInput.value.trim(),
+            date: dateInput.value,
+            completed: false
+        };
+
+        console.log('Adding new todo:', newTodo);
+        todos.push(newTodo);
+        loadTodos();
+
+        // Reset form
+        taskInput.value = '';
+        dateInput.value = '';
+        
+        console.log('Todo added successfully! Total todos:', todos.length);
+    });
+
+    // Filter buttons
+    const filterBtns = document.querySelectorAll('.filter-btn');
+    console.log('Found filter buttons:', filterBtns.length);
+    
+    filterBtns.forEach(btn => {
+        btn.addEventListener('click', function() {
+            console.log('Filter clicked:', this.dataset.filter);
+            document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+            this.classList.add('active');
+            currentFilter = this.dataset.filter;
+            loadTodos();
+        });
+    });
+
+    // Initialize
     loadTodos();
-
-    taskInput.value = '';
-    dateInput.value = '';
+    console.log('Initialization complete!');
 });
 
+// Toggle complete
 function toggleComplete(id) {
+    console.log('Toggle complete:', id);
     const todo = todos.find(t => t.id === id);
     if (todo) {
         todo.completed = !todo.completed;
@@ -90,32 +152,23 @@ function toggleComplete(id) {
     }
 }
 
+// Delete todo
 function deleteTodo(id) {
+    console.log('Delete todo:', id);
     todos = todos.filter(t => t.id !== id);
     loadTodos();
 }
 
-document.querySelectorAll('.filter-btn').forEach(btn => {
-    btn.addEventListener('click', function() {
-        document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-        this.classList.add('active');
-        currentFilter = this.dataset.filter;
-        loadTodos();
-    });
-});
-
+// Format date
 function formatDate(dateString) {
-    const date = new Date(dateString);
+    const date = new Date(dateString + 'T00:00:00');
     const options = { year: 'numeric', month: 'long', day: 'numeric' };
     return date.toLocaleDateString('en-US', options);
 }
 
+// Escape HTML
 function escapeHtml(text) {
     const div = document.createElement('div');
     div.textContent = text;
     return div.innerHTML;
 }
-
-document.getElementById('dateInput').min = new Date().toISOString().split('T')[0];
-
-loadTodos();
