@@ -1,7 +1,6 @@
 let todos = [];
 let currentFilter = 'all';
 
-// Load todos from memory
 function loadTodos() {
     const todoList = document.getElementById('todoList');
     todoList.innerHTML = '';
@@ -41,7 +40,6 @@ function loadTodos() {
     });
 }
 
-// Add todo
 document.getElementById('todoForm').addEventListener('submit', function(e) {
     e.preventDefault();
     
@@ -52,17 +50,17 @@ document.getElementById('todoForm').addEventListener('submit', function(e) {
 
     let isValid = true;
 
-    // Reset errors
+
     taskError.style.display = 'none';
     dateError.style.display = 'none';
 
-    // Validate task
+k
     if (!taskInput.value.trim()) {
         taskError.style.display = 'block';
         isValid = false;
     }
 
-    // Validate date
+ 
     if (!dateInput.value) {
         dateError.style.display = 'block';
         isValid = false;
@@ -70,7 +68,6 @@ document.getElementById('todoForm').addEventListener('submit', function(e) {
 
     if (!isValid) return;
 
-    // Add todo
     const newTodo = {
         id: Date.now(),
         task: taskInput.value.trim(),
@@ -81,12 +78,10 @@ document.getElementById('todoForm').addEventListener('submit', function(e) {
     todos.push(newTodo);
     loadTodos();
 
-    // Reset form
     taskInput.value = '';
     dateInput.value = '';
 });
 
-// Toggle complete
 function toggleComplete(id) {
     const todo = todos.find(t => t.id === id);
     if (todo) {
@@ -95,13 +90,11 @@ function toggleComplete(id) {
     }
 }
 
-// Delete todo
 function deleteTodo(id) {
     todos = todos.filter(t => t.id !== id);
     loadTodos();
 }
 
-// Filter buttons
 document.querySelectorAll('.filter-btn').forEach(btn => {
     btn.addEventListener('click', function() {
         document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
@@ -111,22 +104,18 @@ document.querySelectorAll('.filter-btn').forEach(btn => {
     });
 });
 
-// Format date
 function formatDate(dateString) {
     const date = new Date(dateString);
     const options = { year: 'numeric', month: 'long', day: 'numeric' };
     return date.toLocaleDateString('en-US', options);
 }
 
-// Escape HTML
 function escapeHtml(text) {
     const div = document.createElement('div');
     div.textContent = text;
     return div.innerHTML;
 }
 
-// Set minimum date to today
 document.getElementById('dateInput').min = new Date().toISOString().split('T')[0];
 
-// Initialize
 loadTodos();
